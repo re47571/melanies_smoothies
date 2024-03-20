@@ -6,7 +6,6 @@ import requests
 # Write directly to the app
 st.title(":cup_with_straw: Customize Your Smoothie! :cup_with_straw:")
 
-
 name_on_order = st.text_input('Name on Order:')
 st.write('The name on your smoothie will be: ', name_on_order)
 
@@ -22,12 +21,14 @@ ingredients_list = st.multiselect(
     )
 
 if ingredients_list:
-
     ingredients_string = ''
     
     for fruit_chosen in ingredients_list:
         ingredients_string += fruit_chosen + ' '
-
+        st.subheader(fruit_chosen += ' Nutirition Information')
+        fruityvice_response = requests.get("https://fruityvice.com/api/fruit/" + fruit_chosen)
+        fv_df = st.dataframe(data=fruityvice_response.json(), use_container_width=True)
+        
     my_insert_stmt = """ insert into smoothies.public.orders(ingredients, name_on_order) 
                 values ('""" + ingredients_string + """' , '"""+name_on_order+"""')"""
 
@@ -38,7 +39,6 @@ if ingredients_list:
 
         st.success('Your smoothie is ordered, ' + name_on_order + '!', icon='✅')
 
-fruityvice_response = requests.get("https://fruityvice.com/api/fruit/watermelon")
-#st.text(fruityvice_response.json())
-fv_df = st.dataframe(data=fruityvice_response.json(), use_container_width=True)
+
+
 
